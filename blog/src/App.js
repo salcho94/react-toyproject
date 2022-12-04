@@ -6,15 +6,19 @@ import Footer from '../src/components/page/footer';
 
 function App() {
 
-  let post = 'Blog Title';
   let [title, setTitle] = useState(['1번째 글 제목 입니다.','2번째 글 제목 입니다.','3번째 글 제목 입니다.']);
   let [content, setContent] = useState(['1번째 글 내용 입니다.','2번째 글 내용 입니다.','3번째 글 내용 입니다.']);
   let [like, setLike] = useState([0,0,0]);
   let [modal, setModal] = useState(false);
   let [state,setState] = useState(0);
+  let [addTitle, setAddTitle] = useState('');
 
-
-
+  const create = () => {
+      let newTitle = [...title];
+      newTitle.push(addTitle);
+      console.log(newTitle)
+      setTitle(newTitle);
+  }
   const likePlus = (num) => {
      let likeList = [...like];
      likeList[num] = Number(like[num]) + 1;
@@ -48,7 +52,7 @@ function App() {
   return (
     <div className="App">
      <div className="black-nav">
-      <h4 style={{color : 'red', fontSize:'16px'}}>{post}</h4>
+      <h4 style={{color : 'red', fontSize:'16px'}}>React Blog</h4>
      </div>
      {
      /* <button onClick={changeTitle}>Title Change</button>
@@ -57,27 +61,24 @@ function App() {
     {
         title.map((x,i) => {
             return(
-                <>
+                <div key={i}>
                     <div className="likeList">
-                        <span onClick={() =>  {likePlus(i)}}>👍</span>
-                        <span onClick={() =>  {likeMinus(i)}}>👎</span>
+                        <span onClick={(e) =>  {e.stopPropagation(); likePlus(i)}}>👍</span>
+                        <span onClick={(e) =>  {e.stopPropagation(); likeMinus(i)}}>👎</span>
                         {like[i]}
                     </div>
-                    <div onClick={() =>{ setModal(!modal); setState(i);} } className="list" key={i}>
-                        <h4>{title[i]}
-
-                        </h4>
-
+                    <div onClick={() =>{ setModal(!modal); setState(i);} } className="list">
+                        <h4>{title[i]}</h4>
                         <p>{content[i]}</p>
                     </div>
-                </>
+                </div>
             )
         })
     }
-        {
-            modal ? <Modal title={title} content={content} state={state} changeTitle={changeTitle} color={'skyblue'} />  : null
-        }
-     
+        <input onChange={(e) => {setAddTitle(e.target.value)}}/><button onClick={create}>글등록</button>
+    {
+        modal ? <Modal title={title} content={content} state={state} changeTitle={changeTitle} color={'skyblue'} />  : null
+    }
       <Footer/>
     </div>
   );
